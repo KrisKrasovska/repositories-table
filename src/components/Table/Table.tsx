@@ -5,15 +5,7 @@ import {
   GridRowParams,
   GridSortModel,
 } from '@mui/x-data-grid'
-import {
-  Box,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-} from '@mui/material'
+import { Box, createTheme, ThemeProvider, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../redux/store'
 import {
@@ -21,11 +13,9 @@ import {
   selectRepositories,
   selectSelectedRepository,
 } from '../../redux/selectors'
-import {
-  clearSelectedRepository,
-  fetchRepositories,
-  selectRepository,
-} from '../../redux/reducer'
+import { fetchRepositories, selectRepository } from '../../redux/reducer'
+import RepositoryInfo from '../RepositoryInfo/RepositoryInfo'
+import styles from './Table.module.scss'
 interface TableProps {
   query: string
 }
@@ -47,10 +37,39 @@ const Table: FC<TableProps> = ({ query }) => {
   const handleRowClick = (params: GridRowParams) => {
     dispatch(selectRepository(params.row))
   }
-
-  const handleCloseDialog = () => {
-    dispatch(clearSelectedRepository())
-  }
+  const theme = createTheme({
+    components: {
+      MuiTablePagination: {
+        styleOverrides: {
+          selectLabel: {
+            fontFamily: 'Roboto',
+            fontSize: '12px',
+            fontWeight: 400,
+            lineHeight: '19.92px',
+            letterSpacing: '0.4px',
+            textAlign: 'left',
+          },
+			 root: {
+				fontFamily: 'Roboto',
+            fontSize: '12px',
+            fontWeight: 400,
+            lineHeight: '19.92px',
+            letterSpacing: '0.4px',
+			 },
+			 displayedRows: {
+				fontFamily: 'Roboto',
+            fontSize: '12px',
+            fontWeight: 400,
+            lineHeight: '19.92px',
+            letterSpacing: '0.4px',
+			 }
+        },
+      },
+    },
+  })
+  //   const handleCloseDialog = () => {
+  //     dispatch(clearSelectedRepository())
+  //   }
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage)
@@ -87,42 +106,45 @@ const Table: FC<TableProps> = ({ query }) => {
   }
 
   return (
-    <Box sx={{ height: 572, width: '100%' }}>
-      <DataGrid
-        rows={repositories}
-        columns={columns}
-        paginationModel={{ pageSize, page }}
-        paginationMode='server'
-        rowCount={totalCount} // Используем общее количество репозиториев
-        onPaginationModelChange={(newPaginationModel) => {
-          setPage(newPaginationModel.page)
-          setPageSize(newPaginationModel.pageSize)
-          handlePageChange(newPaginationModel.page)
-        }}
-        pageSizeOptions={[10, 20, 30]}
-        pagination
-        loading={loading}
-        sortModel={sortModel}
-        onSortModelChange={(model) => setSortModel(model)}
-        onRowClick={handleRowClick}
-      />
-      {selectedRepository && (
-        <Dialog open={true} onClose={handleCloseDialog}>
-          <DialogTitle>{selectedRepository.name}</DialogTitle>
-          <DialogContent>
-            <Typography variant='body1'>
-              <strong>Description:</strong> {selectedRepository.description}
-            </Typography>
-            <Typography variant='body1'>
-              <strong>License:</strong>{' '}
-              {selectedRepository.licenseInfo?.name || 'No license'}
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Close</Button>
-          </DialogActions>
-        </Dialog>
-      )}
+    <Box display='flex' sx={{ width: '100%' }}>
+      <Box className={styles['table-container']}>
+        <Typography
+          fontSize={48}
+          lineHeight='1.17'
+          marginTop='24px'
+          marginBottom='24px'
+          component='h2'
+          className={styles['table__results']}
+        >
+          Результаты поиска
+        </Typography>
+        <ThemeProvider theme={theme}>
+          <DataGrid
+            autoHeight
+            className={styles['table']}
+            rows={repositories}
+            columns={columns}
+            paginationModel={{ pageSize, page }}
+            paginationMode='server'
+            rowCount={totalCount} // Используем общее количество репозиториев
+            onPaginationModelChange={(newPaginationModel) => {
+              setPage(newPaginationModel.page)
+              setPageSize(newPaginationModel.pageSize)
+              handlePageChange(newPaginationModel.page)
+            }}
+            pageSizeOptions={[10, 20, 30]}
+            pagination
+            loading={loading}
+            sortModel={sortModel}
+            onSortModelChange={(model) => setSortModel(model)}
+            onRowClick={handleRowClick}
+            getRowClassName={(params) =>
+              params.row.id === selectedRepository?.id ? styles.selectedRow : ''
+            }
+          />
+        </ThemeProvider>
+      </Box>
+      <RepositoryInfo selectedRepository={selectedRepository} />
     </Box>
   )
 }

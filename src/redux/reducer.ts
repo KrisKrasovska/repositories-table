@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { ApolloClient, gql, InMemoryCache } from '@apollo/client'
+import { formatDate } from '../helpers/function'
 
-interface Repository {
+export interface Repository {
   id: string
   name: string
   url: string
@@ -103,7 +104,7 @@ export const fetchRepositories = createAsyncThunk<
         language: edge.node.primaryLanguage?.name || 'N/A',
         forksCount: edge.node.forkCount,
         stargazersCount: edge.node.stargazerCount,
-        updatedAt: edge.node.updatedAt,
+        updatedAt: formatDate(edge.node.updatedAt),
         licenseInfo: edge.node.licenseInfo,
       }))
       return {

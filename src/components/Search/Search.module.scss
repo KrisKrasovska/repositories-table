@@ -13,18 +13,17 @@
   outline: none;
   border-radius: 4px;
   font-size: 14px;
-  font-style: italic;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.71;
-  letter-spacing: 0.17000000178813934px;
-  color: #000000;
+  letter-spacing: 0.17px;
+  color: #000000DE;
 }
-.input::placeholder {
+.input input::placeholder {
   font-size: 14px;
   font-style: italic;
   font-weight: 400;
   line-height: 1.71;
-  letter-spacing: 0.17000000178813934px;
+  letter-spacing: 0.17px;
   color: #828282;
 }
 

@@ -12,7 +12,6 @@ import {
 } from './redux/selectors'
 import { Loader } from './components/Loader/Loader'
 import Table from './components/Table/Table'
-import RepositoryInfo from './components/RepositoryInfo/RepositoryInfo'
 
 const App: FC = () => {
   const [query, setQuery] = useState<string>('')
@@ -40,7 +39,6 @@ const App: FC = () => {
         </Box>
       </header>
       <main className='main'>
-        <Box className='container'>
           {!loading && !error && repositories.length === 0 && (
             <Typography variant='h1' component='h1' className='title'>
               Добро пожаловать
@@ -50,10 +48,8 @@ const App: FC = () => {
           {!loading && !error && repositories.length > 0 && (
             <Box className='main-box'>
               <Table query={query} />
-              <RepositoryInfo />
             </Box>
           )}
-        </Box>
       </main>
       <footer className='footer'>
         <Box className='container'>
