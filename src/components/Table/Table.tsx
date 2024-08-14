@@ -49,20 +49,20 @@ const Table: FC<TableProps> = ({ query }) => {
             letterSpacing: '0.4px',
             textAlign: 'left',
           },
-			 root: {
-				fontFamily: 'Roboto',
+          root: {
+            fontFamily: 'Roboto',
             fontSize: '12px',
             fontWeight: 400,
             lineHeight: '19.92px',
             letterSpacing: '0.4px',
-			 },
-			 displayedRows: {
-				fontFamily: 'Roboto',
+          },
+          displayedRows: {
+            fontFamily: 'Roboto',
             fontSize: '12px',
             fontWeight: 400,
             lineHeight: '19.92px',
             letterSpacing: '0.4px',
-			 }
+          },
         },
       },
     },

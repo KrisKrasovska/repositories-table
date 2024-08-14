@@ -13,9 +13,7 @@ const RepositoryInfo: FC<RepositoryInfoProps> = ({ selectedRepository }) => {
     <Box className={styles['repo-info']}>
       {selectedRepository !== null ? (
         <Box>
-          <Typography variant='body1'>
-            {selectedRepository?.name}
-          </Typography>
+          <Typography variant='body1'>{selectedRepository?.name}</Typography>
           <Typography variant='body1'>
             <strong>License:</strong>
             {selectedRepository?.licenseInfo?.name || 'No license'}
@@ -25,8 +23,8 @@ const RepositoryInfo: FC<RepositoryInfoProps> = ({ selectedRepository }) => {
         <Box className={styles['add-container']}>
           <Typography
             component='p'
-				fontSize={14}
-				lineHeight='1.43'
+            fontSize={14}
+            lineHeight='1.43'
             className={styles['add-text']}
           >
             Выберите репозитарий
