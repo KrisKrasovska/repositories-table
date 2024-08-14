@@ -21,54 +21,69 @@ import {
   selectRepositories,
   selectSelectedRepository,
 } from '../../redux/selectors'
-import { clearSelectedRepository, fetchRepositories, selectRepository } from '../../redux/reducer'
+import {
+  clearSelectedRepository,
+  fetchRepositories,
+  selectRepository,
+} from '../../redux/reducer'
 interface TableProps {
-	query: string;
+  query: string
 }
 const Table: FC<TableProps> = ({ query }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const repositories = useSelector(selectRepositories);
-  const loading = useSelector(selectLoading);
-  const selectedRepository = useSelector(selectSelectedRepository);
-  const hasNextPage = useSelector((state: RootState) => state.github.hasNextPage);
-  const endCursor = useSelector((state: RootState) => state.github.endCursor);
-console.log(endCursor, hasNextPage)
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [page, setPage] = useState<number>(0);
+  const dispatch = useDispatch<AppDispatch>()
+  const repositories = useSelector(selectRepositories)
+  const loading = useSelector(selectLoading)
+  const selectedRepository = useSelector(selectSelectedRepository)
+  const hasNextPage = useSelector(
+    (state: RootState) => state.github.hasNextPage
+  )
+  const endCursor = useSelector((state: RootState) => state.github.endCursor)
+  const totalCount = useSelector((state: RootState) => state.github.totalPages)
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [page, setPage] = useState<number>(0)
   const [sortModel, setSortModel] = useState<GridSortModel>([
     { field: 'stargazersCount', sort: 'desc' },
-  ]);
-
+  ])
   const handleRowClick = (params: GridRowParams) => {
-    dispatch(selectRepository(params.row));
-  };
+    dispatch(selectRepository(params.row))
+  }
 
   const handleCloseDialog = () => {
-    dispatch(clearSelectedRepository());
-  };
+    dispatch(clearSelectedRepository())
+  }
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    if (newPage > page && hasNextPage) {
-      dispatch(fetchRepositories({ query, first: pageSize, after: endCursor }));
-      console.log('Fetching additional repositories...');
+    setPage(newPage)
+    if (newPage <= totalCount && hasNextPage) {
+      dispatch(fetchRepositories({ query, first: pageSize, after: endCursor }))
     }
-  };
+  }
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Наименование репозитория', width: 182 },
     { field: 'language', headerName: 'Язык', width: 182 },
-    { field: 'forksCount', headerName: 'Число форков', width: 182, sortable: true },
-    { field: 'stargazersCount', headerName: 'Число звезд', width: 182, sortable: true },
-    { field: 'updatedAt', headerName: 'Дата обновления', width: 182, sortable: true },
-  ];
-
-  console.log('Repositories:', repositories);
-  console.log('Loading state:', loading);
-  console.log('Selected repository:', selectedRepository);
+    {
+      field: 'forksCount',
+      headerName: 'Число форков',
+      width: 182,
+      sortable: true,
+    },
+    {
+      field: 'stargazersCount',
+      headerName: 'Число звезд',
+      width: 182,
+      sortable: true,
+    },
+    {
+      field: 'updatedAt',
+      headerName: 'Дата обновления',
+      width: 182,
+      sortable: true,
+    },
+  ]
 
   if (!repositories || repositories.length === 0) {
-    return <Typography variant="body1">Не найдено репозиториев</Typography>;
+    return <Typography variant='body1'>Не найдено репозиториев</Typography>
   }
 
   return (
@@ -76,12 +91,14 @@ console.log(endCursor, hasNextPage)
       <DataGrid
         rows={repositories}
         columns={columns}
-      paginationModel={{ pageSize, page }}
-  onPaginationModelChange={(newPaginationModel) => {
-    setPage(newPaginationModel.page);
-    setPageSize(newPaginationModel.pageSize);
-    handlePageChange(newPaginationModel.page);
-  }}
+        paginationModel={{ pageSize, page }}
+        paginationMode='server'
+        rowCount={totalCount} // Используем общее количество репозиториев
+        onPaginationModelChange={(newPaginationModel) => {
+          setPage(newPaginationModel.page)
+          setPageSize(newPaginationModel.pageSize)
+          handlePageChange(newPaginationModel.page)
+        }}
         pageSizeOptions={[10, 20, 30]}
         pagination
         loading={loading}
@@ -97,7 +114,8 @@ console.log(endCursor, hasNextPage)
               <strong>Description:</strong> {selectedRepository.description}
             </Typography>
             <Typography variant='body1'>
-              <strong>License:</strong> {selectedRepository.licenseInfo?.name || 'No license'}
+              <strong>License:</strong>{' '}
+              {selectedRepository.licenseInfo?.name || 'No license'}
             </Typography>
           </DialogContent>
           <DialogActions>
@@ -106,8 +124,7 @@ console.log(endCursor, hasNextPage)
         </Dialog>
       )}
     </Box>
-  );
-};
-
+  )
+}
 
 export default Table

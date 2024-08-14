@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  ChangeEvent,
-  FC,
-  SetStateAction,
-  useState,
-} from 'react'
+import { Dispatch, ChangeEvent, FC, SetStateAction, useState } from 'react'
 import { TextField, Button, Box } from '@mui/material'
 import styles from './Search.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
