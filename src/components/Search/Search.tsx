@@ -1,44 +1,65 @@
-import { ChangeEvent, FC, useState } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import {
+  Dispatch,
+  ChangeEvent,
+  FC,
+  SetStateAction,
+  useState,
+} from 'react'
+import { TextField, Button, Box } from '@mui/material'
 import styles from './Search.module.scss'
-import { useDispatch, useSelector} from 'react-redux';
-import { AppDispatch } from '../../redux/store';
-import { selectLoading } from '../../redux/selectors';
-import { fetchRepositories } from '../../redux/reducer';
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch } from '../../redux/store'
+import { selectLoading } from '../../redux/selectors'
+import { fetchRepositories } from '../../redux/reducer'
+interface SearchProps {
+  setQuery: Dispatch<SetStateAction<string>>
+  query: string
+}
 
+const SearchInput: FC<SearchProps> = ({ setQuery, query }) => {
+  const [searchText, setSearchText] = useState<string>('')
 
-const SearchInput: FC = () => {
-  const [query, setQuery] = useState<string>('');
-  const dispatch = useDispatch<AppDispatch>();
- const loading = useSelector(selectLoading);
+  const dispatch = useDispatch<AppDispatch>()
+  const loading = useSelector(selectLoading)
 
   const handleSearch = () => {
-    if (query) {
-      dispatch(fetchRepositories(query));
-		setQuery("")
+    setQuery(searchText)
+    if (searchText) {
+      dispatch(fetchRepositories({ query: searchText, first: 10, after: null }))
+      setSearchText('')
     }
-  };
-
+  }
 
   return (
-    <Box className={styles.form} component='form' display="flex" alignItems="center" gap={1}>
+    <Box
+      className={styles.form}
+      component='form'
+      display='flex'
+      alignItems='center'
+      gap={1}
+    >
       <TextField
-	
-		id="input"
-		placeholder="Введите поисковый запрос"
-        variant="filled"
-        value={query}
-		  className={styles.input}
+        id='input'
+        placeholder='Введите поисковый запрос'
+        variant='filled'
+        value={searchText}
+        className={styles.input}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-  }
-	}
+          setSearchText(event.target.value)
+        }}
       />
-      <Button className={styles.btn} variant="contained" disabled={loading} onClick={()=>{handleSearch()}}>
+      <Button
+        className={styles.btn}
+        variant='contained'
+        disabled={loading}
+        onClick={() => {
+          handleSearch()
+        }}
+      >
         Искать
       </Button>
     </Box>
-  );
-};
+  )
+}
 
-export default SearchInput;
+export default SearchInput
