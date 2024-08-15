@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { ApolloClient, gql, InMemoryCache } from '@apollo/client'
 import { formatDate } from '../helpers/function'
+import { toast } from 'react-toastify'
 
 export interface Repository {
   id: string
@@ -95,7 +96,7 @@ export const fetchRepositories = createAsyncThunk<
         query: GET_REPOSITORIES,
         variables: { query, first, after: after || undefined },
       })
-
+      console.log(data.search)
       const repositories = data.search.edges.map((edge: any) => ({
         id: edge.node.id,
         name: edge.node.name,
@@ -107,6 +108,9 @@ export const fetchRepositories = createAsyncThunk<
         updatedAt: formatDate(edge.node.updatedAt),
         licenseInfo: edge.node.licenseInfo,
       }))
+      if (repositories.length === 0) {
+        toast.success('Не найдено репозиториев')
+      }
       return {
         repositories,
         endCursor: data.search.pageInfo.endCursor,
@@ -114,6 +118,8 @@ export const fetchRepositories = createAsyncThunk<
         totalCount: data.search.repositoryCount, // Передаем общее количество репозиториев
       }
     } catch (error) {
+      toast.error('Ошибка, вернитесь на главную страницу')
+
       return rejectWithValue('Failed to fetch repositories')
     }
   }

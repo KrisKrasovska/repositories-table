@@ -1,7 +1,8 @@
-import { FC, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import {
   DataGrid,
   GridColDef,
+  GridPaginationModel,
   GridRowParams,
   GridSortModel,
 } from '@mui/x-data-grid'
@@ -29,14 +30,19 @@ const Table: FC<TableProps> = ({ query }) => {
   )
   const endCursor = useSelector((state: RootState) => state.github.endCursor)
   const totalCount = useSelector((state: RootState) => state.github.totalPages)
-  const [pageSize, setPageSize] = useState<number>(10)
-  const [page, setPage] = useState<number>(0)
+  console.log(totalCount)
+  const [pageModel, setPageModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 10,
+  })
+  console.log(repositories)
   const [sortModel, setSortModel] = useState<GridSortModel>([
     { field: 'stargazersCount', sort: 'desc' },
   ])
   const handleRowClick = (params: GridRowParams) => {
     dispatch(selectRepository(params.row))
   }
+  console.log(pageModel)
   const theme = createTheme({
     components: {
       MuiTablePagination: {
@@ -67,16 +73,23 @@ const Table: FC<TableProps> = ({ query }) => {
       },
     },
   })
-  //   const handleCloseDialog = () => {
-  //     dispatch(clearSelectedRepository())
-  //   }
+//   const handleChangePage = useCallback((totalCount:number,hasNextPage:boolean, query: string, dispatch: AppDispatch, endCursor: string | null ) => {
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage)
-    if (newPage <= totalCount && hasNextPage) {
-      dispatch(fetchRepositories({ query, first: pageSize, after: endCursor }))
-    }
-  }
+//   }, [pageModel.page, pageModel.pageSize])
+// useEffect(()=> {
+
+//  if ( pageModel.page <= totalCount && hasNextPage) {
+//      dispatch(
+//        fetchRepositories({
+//          query,
+//          first: pageModel.pageSize,
+//          after: endCursor,
+//        })
+//      )
+//    }
+
+// },[])
+
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Наименование репозитория', width: 182 },
@@ -101,49 +114,45 @@ const Table: FC<TableProps> = ({ query }) => {
     },
   ]
 
-  if (!repositories || repositories.length === 0) {
-    return <Typography variant='body1'>Не найдено репозиториев</Typography>
-  }
-
   return (
     <Box display='flex' sx={{ width: '100%' }}>
-      <Box className={styles['table-container']}>
-        <Typography
-          fontSize={48}
-          lineHeight='1.17'
-          marginTop='24px'
-          marginBottom='24px'
-          component='h2'
-          className={styles['table__results']}
-        >
-          Результаты поиска
-        </Typography>
-        <ThemeProvider theme={theme}>
-          <DataGrid
-            autoHeight
-            className={styles['table']}
-            rows={repositories}
-            columns={columns}
-            paginationModel={{ pageSize, page }}
-            paginationMode='server'
-            rowCount={totalCount} // Используем общее количество репозиториев
-            onPaginationModelChange={(newPaginationModel) => {
-              setPage(newPaginationModel.page)
-              setPageSize(newPaginationModel.pageSize)
-              handlePageChange(newPaginationModel.page)
-            }}
-            pageSizeOptions={[10, 20, 30]}
-            pagination
-            loading={loading}
-            sortModel={sortModel}
-            onSortModelChange={(model) => setSortModel(model)}
-            onRowClick={handleRowClick}
-            getRowClassName={(params) =>
-              params.row.id === selectedRepository?.id ? styles.selectedRow : ''
-            }
-          />
-        </ThemeProvider>
-      </Box>
+      {repositories.length > 0 && (
+        <Box className={styles['table-container']}>
+          <Typography
+            fontSize={48}
+            lineHeight='1.17'
+            marginTop='24px'
+            marginBottom='24px'
+            component='h2'
+            className={styles['table__results']}
+          >
+            Результаты поиска
+          </Typography>
+          <ThemeProvider theme={theme}>
+            <DataGrid
+              autoHeight
+              className={styles['table']}
+              rows={repositories}
+              columns={columns}
+              paginationModel={pageModel}
+              paginationMode='server'
+              rowCount={totalCount} // Используем общее количество репозиториев
+              onPaginationModelChange={setPageModel}
+              pageSizeOptions={[10, 20, 30]}
+              pagination
+              loading={loading}
+              sortModel={sortModel}
+              onSortModelChange={(model) => setSortModel(model)}
+              onRowClick={handleRowClick}
+              getRowClassName={(params) =>
+                params.row.id === selectedRepository?.id
+                  ? styles.selectedRow
+                  : ''
+              }
+            />
+          </ThemeProvider>
+        </Box>
+      )}
       <RepositoryInfo selectedRepository={selectedRepository} />
     </Box>
   )

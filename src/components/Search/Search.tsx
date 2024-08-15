@@ -12,12 +12,12 @@ interface SearchProps {
 
 const SearchInput: FC<SearchProps> = ({ setQuery, query }) => {
   const [searchText, setSearchText] = useState<string>('')
-
   const dispatch = useDispatch<AppDispatch>()
   const loading = useSelector(selectLoading)
 
   const handleSearch = () => {
     setQuery(searchText)
+
     if (searchText) {
       dispatch(fetchRepositories({ query: searchText, first: 10, after: null }))
       setSearchText('')
@@ -45,6 +45,7 @@ const SearchInput: FC<SearchProps> = ({ setQuery, query }) => {
       <Button
         className={styles.btn}
         variant='contained'
+		  type='button'
         disabled={loading}
         onClick={() => {
           handleSearch()

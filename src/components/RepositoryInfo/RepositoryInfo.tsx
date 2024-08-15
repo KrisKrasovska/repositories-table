@@ -8,7 +8,6 @@ interface RepositoryInfoProps {
 }
 
 const RepositoryInfo: FC<RepositoryInfoProps> = ({ selectedRepository }) => {
-  console.log(selectedRepository)
   return (
     <Box className={styles['repo-info']}>
       {selectedRepository !== null ? (
