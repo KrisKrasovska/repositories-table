@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react'
 import './index.css'
 import './App.css'
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import SearchInput from './components/Search/Search'
 import { Box, Typography } from '@mui/material'

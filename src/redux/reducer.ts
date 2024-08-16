@@ -165,7 +165,7 @@ export const fetchRepositoriesPrev = createAsyncThunk<
         ),
       }))
       if (repositories.length === 0) {
-        toast.success('Не найдено репозиториев')
+        toast.success('Не найдено репозиториев по данному запросу')
       }
       return {
         repositories,

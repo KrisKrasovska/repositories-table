@@ -29,7 +29,7 @@ const Table: FC<TableProps> = ({ query }) => {
   const repositories = useSelector(selectRepositories)
   const loading = useSelector(selectLoading)
   const selectedRepository = useSelector(selectSelectedRepository)
- 
+
   const hasNextPage = useSelector(
     (state: RootState) => state.github.hasNextPage
   )
@@ -41,7 +41,7 @@ const Table: FC<TableProps> = ({ query }) => {
     (state: RootState) => state.github.startCursor
   )
   const totalCount = useSelector((state: RootState) => state.github.totalPages)
-   const [rowCountState, setRowCountState] = useState<number>(totalCount || 0);
+  const [rowCountState, setRowCountState] = useState<number>(totalCount || 0)
   const [pageModel, setPageModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 10,
@@ -93,10 +93,10 @@ const Table: FC<TableProps> = ({ query }) => {
     setPageModel(model)
   }
   useEffect(() => {
-  setRowCountState((prevRowCountState) =>
-    totalCount !== undefined ? totalCount : prevRowCountState,
-  );
-}, [totalCount, setRowCountState]);
+    setRowCountState((prevRowCountState) =>
+      totalCount !== undefined ? totalCount : prevRowCountState
+    )
+  }, [totalCount, setRowCountState])
   useEffect(() => {
     console.log(pageModel.page)
     if (pageModel.page > 0 && pageStatus === 'next' && hasNextPage) {
@@ -107,7 +107,6 @@ const Table: FC<TableProps> = ({ query }) => {
           after: endCursor,
         })
       )
-		
     }
     if (pageModel.page > 0 && pageStatus === 'prev' && hasPreviousPage) {
       console.log('prev')
