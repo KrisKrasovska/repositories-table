@@ -17,6 +17,8 @@ export interface GithubState {
   selectedRepository: Repository | null
   loading: boolean
   error: string | null
+  startCursor: string | null
+  hasPreviousPage: boolean
   endCursor: string | null
   hasNextPage: boolean
   totalCount: number

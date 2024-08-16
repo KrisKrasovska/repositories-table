@@ -14,7 +14,11 @@ import {
   selectRepositories,
   selectSelectedRepository,
 } from '../../redux/selectors'
-import { fetchRepositories, selectRepository } from '../../redux/reducer'
+import {
+  fetchRepositories,
+  fetchRepositoriesPrev,
+  selectRepository,
+} from '../../redux/reducer'
 import RepositoryInfo from '../RepositoryInfo/RepositoryInfo'
 import styles from './Table.module.scss'
 interface TableProps {
@@ -28,14 +32,19 @@ const Table: FC<TableProps> = ({ query }) => {
   const hasNextPage = useSelector(
     (state: RootState) => state.github.hasNextPage
   )
+  const hasPreviousPage = useSelector(
+    (state: RootState) => state.github.hasPreviousPage
+  )
   const endCursor = useSelector((state: RootState) => state.github.endCursor)
+  const startCursor = useSelector(
+    (state: RootState) => state.github.startCursor
+  )
   const totalCount = useSelector((state: RootState) => state.github.totalPages)
-  console.log(totalCount)
   const [pageModel, setPageModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 10,
   })
-  console.log(repositories)
+  const [pageStatus, setPageStatus] = useState<'next' | 'prev'>('next')
   const [sortModel, setSortModel] = useState<GridSortModel>([
     { field: 'stargazersCount', sort: 'desc' },
   ])
@@ -73,19 +82,35 @@ const Table: FC<TableProps> = ({ query }) => {
       },
     },
   })
-
+  const handlePage = (model: GridPaginationModel) => {
+    if (pageModel.page > model.page) {
+      setPageStatus('prev')
+    } else {
+      setPageStatus('next')
+    }
+    setPageModel(model)
+  }
   useEffect(() => {
     console.log(pageModel.page)
-    if (pageModel.page > 0 && endCursor !== null) {
-      console.log(query)
-      console.log(endCursor)
-      //         dispatch(
-      //    fetchRepositories({
-      //      query,
-      //      first: pageModel.pageSize,
-      //      after: endCursor,
-      //    })
-      //  )
+    if (pageModel.page > 0 && pageStatus === 'next' && hasNextPage) {
+      console.log('next')
+      dispatch(
+        fetchRepositories({
+          query,
+          first: pageModel.pageSize,
+          after: endCursor,
+        })
+      )
+    }
+    if (pageModel.page > 0 && pageStatus === 'prev' && hasPreviousPage) {
+      console.log('prev')
+      dispatch(
+        fetchRepositoriesPrev({
+          query,
+          last: pageModel.pageSize,
+          before: startCursor,
+        })
+      )
     }
   }, [
     pageModel.page,
@@ -94,6 +119,10 @@ const Table: FC<TableProps> = ({ query }) => {
     totalCount,
     pageModel.pageSize,
     query,
+    pageStatus,
+    hasNextPage,
+    hasPreviousPage,
+    startCursor,
   ])
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Наименование репозитория', width: 182 },
@@ -141,7 +170,7 @@ const Table: FC<TableProps> = ({ query }) => {
               paginationModel={pageModel}
               paginationMode='server'
               rowCount={totalCount} // Используем общее количество репозиториев
-              onPaginationModelChange={setPageModel}
+              onPaginationModelChange={handlePage}
               pageSizeOptions={[10, 20, 30]}
               pagination
               loading={loading}
