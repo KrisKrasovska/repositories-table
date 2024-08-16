@@ -93,7 +93,6 @@ const Table: FC<TableProps> = ({ query }) => {
   useEffect(() => {
     console.log(pageModel.page)
     if (pageModel.page > 0 && pageStatus === 'next' && hasNextPage) {
-      console.log('next')
       dispatch(
         fetchRepositories({
           query,
