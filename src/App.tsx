@@ -23,7 +23,7 @@ const App: FC = () => {
     <>
       <header className='header'>
         <Box className='container'>
-          <SearchInput query={query} setQuery={setQuery} />
+          <SearchInput setQuery={setQuery} />
         </Box>
       </header>
       <main className='main'>

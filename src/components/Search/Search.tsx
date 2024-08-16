@@ -7,10 +7,9 @@ import { selectLoading } from '../../redux/selectors'
 import { fetchRepositories } from '../../redux/reducer'
 interface SearchProps {
   setQuery: Dispatch<SetStateAction<string>>
-  query: string
 }
 
-const SearchInput: FC<SearchProps> = ({ setQuery, query }) => {
+const SearchInput: FC<SearchProps> = ({ setQuery }) => {
   const [searchText, setSearchText] = useState<string>('')
   const dispatch = useDispatch<AppDispatch>()
   const loading = useSelector(selectLoading)
@@ -45,7 +44,7 @@ const SearchInput: FC<SearchProps> = ({ setQuery, query }) => {
       <Button
         className={styles.btn}
         variant='contained'
-		  type='button'
+        type='button'
         disabled={loading}
         onClick={() => {
           handleSearch()

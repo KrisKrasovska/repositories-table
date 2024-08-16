@@ -3,6 +3,67 @@
   background-color: #f2f2f2;
 }
 
+.repo-info__container {
+  width: 100%;
+  padding: 24px 32px 24px 24px;
+}
+.repo-info__title {
+  color: #000000de;
+  margin-bottom: 16px !important;
+}
+.repo-info__top-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.repo-info__label {
+  min-width: 62px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  background-color: #2196f3;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.repo-info__bottom-text {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.38;
+  letter-spacing: 0.16px;
+  color: #ffffff;
+}
+.repo-info__text {
+  font-weight: 400;
+  letter-spacing: 0.17px;
+  color: #000000de;
+}
+.repo-info__stars-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.repo-info__list {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.repo-info__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00000014;
+  min-width: 45px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 100px;
+  width: max-content;
+}
 .add-text {
   font-size: 14px;
   font-weight: 400;

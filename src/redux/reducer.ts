@@ -2,30 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { ApolloClient, gql, InMemoryCache } from '@apollo/client'
 import { formatDate } from '../helpers/function'
 import { toast } from 'react-toastify'
-
-export interface Repository {
-  id: string
-  name: string
-  url: string
-  description: string
-  language: string | null
-  forksCount: number
-  stargazersCount: number
-  updatedAt: string
-  licenseInfo: {
-    name: string
-  } | null
-}
-export interface GithubState {
-  repositories: Repository[]
-  selectedRepository: Repository | null
-  loading: boolean
-  error: string | null
-  endCursor: string | null
-  hasNextPage: boolean
-  totalCount: number
-  totalPages: number
-}
+import { GithubState, Repository } from '../types/types'
 
 const initialState: GithubState = {
   repositories: [],
@@ -52,6 +29,15 @@ const GET_REPOSITORIES = gql`
             description
             primaryLanguage {
               name
+            }
+            repositoryTopics(first: 4) {
+              edges {
+                node {
+                  topic {
+                    name
+                  }
+                }
+              }
             }
             forkCount
             stargazerCount
@@ -94,7 +80,7 @@ export const fetchRepositories = createAsyncThunk<
 
       const { data } = await client.query({
         query: GET_REPOSITORIES,
-        variables: { query, first, after: after || undefined },
+        variables: { query, first, after },
       })
       console.log(data.search)
       const repositories = data.search.edges.map((edge: any) => ({
@@ -107,6 +93,7 @@ export const fetchRepositories = createAsyncThunk<
         stargazersCount: edge.node.stargazerCount,
         updatedAt: formatDate(edge.node.updatedAt),
         licenseInfo: edge.node.licenseInfo,
+        topics: edge.node.repositoryTopics.edges.map((edge:any) => edge.node.topic.name),
       }))
       if (repositories.length === 0) {
         toast.success('Не найдено репозиториев')

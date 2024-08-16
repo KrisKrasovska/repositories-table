@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import {
   DataGrid,
   GridColDef,
@@ -73,24 +73,28 @@ const Table: FC<TableProps> = ({ query }) => {
       },
     },
   })
-//   const handleChangePage = useCallback((totalCount:number,hasNextPage:boolean, query: string, dispatch: AppDispatch, endCursor: string | null ) => {
 
-//   }, [pageModel.page, pageModel.pageSize])
-// useEffect(()=> {
-
-//  if ( pageModel.page <= totalCount && hasNextPage) {
-//      dispatch(
-//        fetchRepositories({
-//          query,
-//          first: pageModel.pageSize,
-//          after: endCursor,
-//        })
-//      )
-//    }
-
-// },[])
-
-
+  useEffect(() => {
+    console.log(pageModel.page)
+    if (pageModel.page > 0 && endCursor !== null) {
+      console.log(query)
+      console.log(endCursor)
+      //         dispatch(
+      //    fetchRepositories({
+      //      query,
+      //      first: pageModel.pageSize,
+      //      after: endCursor,
+      //    })
+      //  )
+    }
+  }, [
+    pageModel.page,
+    dispatch,
+    endCursor,
+    totalCount,
+    pageModel.pageSize,
+    query,
+  ])
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Наименование репозитория', width: 182 },
     { field: 'language', headerName: 'Язык', width: 182 },
